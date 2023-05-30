@@ -1,0 +1,84 @@
+:root {
+    --bg: #131013;
+    --fg: #f7f7e6;
+
+    --nav-button: #efa8a8;
+    --nav-button-selected: #9f90ef;
+    --nav-fg: #0a0a0f;
+}
+
+/* Nav Bar */
+header {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    width: 100%;
+    padding: initial 10px;
+
+    margin-bottom: 30px;
+}
+
+header div#branding-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+}
+
+/* Turning the logo from black to white */
+header div#branding-container img {
+    filter: brightness(100);
+    height: 100px;
+}
+
+header div#branding-container h1 {
+    font-size: 3em;
+    font-family: "DejaVu Serif", "Georgia", serif;
+}
+
+nav ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    display: flex;
+    flex-direction: row;
+    gap: 30px;
+}
+
+nav ul>a {
+    text-decoration: none;
+    display: block;
+
+    padding: 8px 6px;
+
+    font-size: 1.3em;
+    font-family: "Open Sans", sans-serif;
+
+    color: var(--nav-fg);
+    background-color: var(--nav-button);
+}
+
+nav ul>a:hover {
+    background-color: var(--nav-button-selected);
+}
+
+nav ul>a:visited {
+    text-decoration: none;
+
+}
+/* End Nav Bar */
+
+body {
+    color: var(--fg);
+    background-color: var(--bg);
+
+    font-family: "Open Sans", sans-serif;
+}
+
+main {
+    width: 75%;
+    margin: 0 auto;
+    padding: 4px;
+}
