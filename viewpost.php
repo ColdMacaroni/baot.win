@@ -7,7 +7,7 @@
         <link href="/css/styles.css" rel="stylesheet">
 
         <!-- Highlight code -->
-        <link rel="stylesheet" href="/highlightjs/styles/kimbie-dark.min.css" />
+        <link rel="stylesheet" href="/highlightjs/styles/base16/gruvbox-dark-hard.min.css" />
         <script src="/highlightjs/highlight.min.js"></script>
         <script>hljs.highlightAll();</script>
     </head>

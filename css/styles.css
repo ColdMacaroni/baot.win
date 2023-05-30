@@ -82,3 +82,13 @@ main {
     margin: 0 auto;
     padding: 4px;
 }
+
+/* Make code a bit more readable */
+
+code {
+    font-size: 1.3em;
+    max-width: fit-content;
+    min-width: 50%;
+    margin: 0 auto;
+    border-radius: 5px;
+}
