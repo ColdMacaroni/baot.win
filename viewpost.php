@@ -5,13 +5,21 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="/css/styles.css" rel="stylesheet">
+
+        <!-- Highlight code -->
+        <link rel="stylesheet" href="/highlightjs/styles/kimbie-dark.min.css" />
+        <script src="/highlightjs/highlight.min.js"></script>
+        <script>hljs.highlightAll();</script>
     </head>
     <body>
         <?php require "header.html"; ?>
         <main>
-            <h2>The home page</h2>
-            <p>Yep, it's website time.</p>        
-            <p>Check out my blog posts! They're very cool I swear.</p>
+            <?php
+            $folder = "posts";
+            $fn = $_GET["post"];
+
+            include "$folder/$fn.html";
+        ?>
         </main>
         <?php require "footer.html"; ?>
     </body>
