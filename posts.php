@@ -7,12 +7,11 @@
         <link href="/css/styles.css" rel="stylesheet">
     </head>
     <body>
-        TODO! Sort by date. Also make this prettier...
-
         <?php require "header.html"; ?>
         <main>
             <h2>My posts</h2>
             <p>These are all my epic posts!</p>
+            <p>TODO! Sort by date. Also make this prettier...</p>
         <?php
         // Loop over files in posts/ and list them here. Sort by date?
         $folder = "posts/";
