@@ -12,7 +12,7 @@
         <script>hljs.highlightAll();</script>
     </head>
     <body>
-        <?php require "header.html"; ?>
+        <?php require "header.php"; ?>
         <main>
             <?php
             $folder = "posts";

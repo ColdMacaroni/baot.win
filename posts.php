@@ -9,7 +9,7 @@
     <body>
         TODO! Sort by date. Also make this prettier...
 
-        <?php require "header.html"; ?>
+        <?php require "header.php"; ?>
         <main>
             <h2>My posts</h2>
             <p>These are all my epic posts!</p>

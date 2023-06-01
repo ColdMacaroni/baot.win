@@ -7,7 +7,7 @@
         <link href="/css/styles.css" rel="stylesheet">
     </head>
     <body>
-        <?php require "header.html"; ?>
+        <?php require "header.php"; ?>
         <main>
             <h2>The home page</h2>
             <p>Yep, it's website time.</p>        

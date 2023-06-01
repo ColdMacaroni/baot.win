@@ -10,5 +10,6 @@
       <a href="index.php"><li>My Stuff</li></a>
     </ul>
   </nav>
-  <hr id="header-end">
+
+  <hr id="header-end" <?php ?> />
 </header>
