@@ -41,6 +41,7 @@ header div#branding-container h1 {
 
 nav ul {
     margin: 0;
+    margin-bottom: 10px;
     padding: 0;
     list-style: none;
 
@@ -70,6 +71,28 @@ nav ul>a:visited {
     text-decoration: none;
     color: var(--nav-fg);
 
+}
+
+/* Have a repeating image in the background. */
+/* From https://www.sitepoint.com/css3-transform-background-image/ */
+/* https://developer.mozilla.org/en-US/docs/Web/CSS/background */
+header hr#header-end::before {
+  display: block;
+  content: "";
+  z-index: -1;
+  height: 100%;
+  /* TODO! Make this random */
+  background: center/var(--hr-height) 100%
+              url("/imgs/glasses.png");
+}
+
+header hr#header-end {
+  --hr-height: 32px;
+  height: var(--hr-height);
+
+  border: 0px;
+  /* Needs to be an odd number or the imgs on either side are cut off */
+  width: calc(var(--hr-height) * 25);
 }
 /* End Nav Bar */
 
