@@ -12,7 +12,6 @@
             <h2>The home page</h2>
             <p>Yep, it's website time.</p>        
             <p>Check out my blog posts! They're very cool I swear.</p>
-            <p>TODO! Make links (anchor tags) actually fit the theme they're bad rn</p>
         </main>
         <?php require "footer.html"; ?>
     </body>

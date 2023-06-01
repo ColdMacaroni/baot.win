@@ -1,9 +1,11 @@
 :root {
     --bg: #131013;
     --fg: #f7f7e6;
+    --link-fg: #efbf7c;
+    --link-visited-fg: #c4805c;
 
     --nav-button: #efa8a8;
-    --nav-button-selected: #9f90ef;
+    --nav-button-selected: #af90cf;
     --nav-fg: #0a0a0f;
 }
 
@@ -66,6 +68,7 @@ nav ul>a:hover {
 
 nav ul>a:visited {
     text-decoration: none;
+    color: var(--nav-fg);
 
 }
 /* End Nav Bar */
@@ -91,4 +94,12 @@ code {
     min-width: 50%;
     margin: 0 auto;
     border-radius: 5px;
+}
+
+a {
+    color: var(--link-fg);
+}
+
+a:visited {
+    color: var(--link-visited-fg);
 }
