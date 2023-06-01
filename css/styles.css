@@ -82,12 +82,12 @@ header hr#header-end::before {
   z-index: -1;
   height: 100%;
   /* TODO! Make this random */
-  background: center/var(--hr-height) 100%
-              url("/imgs/glasses.png");
+  background: center/var(--hr-height) 100% var(--img);
 }
 
 header hr#header-end {
   --hr-height: 32px;
+  --img: url("/imgs/glasses.png");
   height: var(--hr-height);
 
   border: 0px;
