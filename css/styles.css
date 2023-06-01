@@ -87,7 +87,7 @@ header hr#header-end::before {
 
 header hr#header-end {
   --hr-height: 32px;
-  --img: url("/imgs/glasses.png");
+  --img: url("/imgs/ruler/glasses.png");
   height: var(--hr-height);
 
   border: 0px;
