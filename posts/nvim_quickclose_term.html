@@ -1,0 +1,136 @@
+<h2 id="nvim---quick-terminal-windows.-not-ideally.">
+  Nvim - Quick terminal windows. Not ideally.
+</h2>
+<p>
+  <strong
+    >Note: Halfway through this post i figured out a better way of doing it
+    😀</strong
+  ><br />
+  <strong>I’ll probably make a post about it if i ever to it that way</strong>
+</p>
+<p>
+  <strong>Skip to the funky bits:</strong> <a href="#Hotkeys">Hotkeys</a>
+  <a href="#Auto%20close">Autocmd</a>
+</p>
+<p>
+  In <a href="https://neovim.io/">NeoVim</a> (a fantastic text editor), you can
+  create interactive terminal buffers using <code>:term</code> in normal mode.
+  It’s a great feature and it’s really nice not having to leave your editor.
+  <del>Not that anyone knows how to exit it.</del> However, I’ve got some issues
+  with it.
+</p>
+<p>
+  Oh and uh, you can’t just press <code>&lt;Esc&gt;</code> in terminal mode,
+  you’ve got to press <code>&lt;C-\&gt;&lt;C-n&gt;</code> to go to normal mode.
+  You can do <code>:tnoremap &lt;Esc&gt; &lt;C-\&gt;&lt;C-n&gt;</code> if you
+  don’t enjoy that.
+</p>
+<h3 id="the-issues.">The issues.</h3>
+<p>The issues I had were,</p>
+<ul>
+  <li>I can’t be bothered typing <code>:term</code></li>
+  <li>It opens in a new buffer, not window.</li>
+  <li>Doing <code>&lt;C-w&gt;v:term</code> is even more annoying</li>
+  <li>
+    When exiting the buffer, it says <code>[Process exited 0]</code> and
+    requires you to press a key to actually close the window.
+  </li>
+</ul>
+<p>
+  These are massive inconveniences, ngl. But! I love this thing! Extremely
+  customisable! Let’s get onto that!!
+</p>
+<h3 id="the-fixes.">The fixes.</h3>
+<p>
+  So we’re using Lua… I hear you, also strongly dislike it. I don’t think I’d
+  prefer writing vimscript though.
+</p>
+<p>
+  The basic bits are: 1. Create hotkeys for starting the terminal windows 2.
+  Auto-close the terminals once we’re done
+</p>
+<h4 id="hotkeys">Hotkeys</h4>
+<p>
+  I created a function to set up the terminals. The idea is that you pass as an
+  argument how you’d like to open the terminal (vertical split, horizontal
+  split). It also calls the terminal with the shell that nvim is running on.
+</p>
+<p>
+  I like having a file called <code>map.lua</code>, but you can put them
+  wherever.
+</p>
+<p>Here it is</p>
+<div class="sourceCode" id="cb1">
+  <pre
+    class="sourceCode lua"
+  ><code class="sourceCode lua"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">-- I don&#39;t want to type this every time</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="kw">local</span> <span class="va">keymap</span> <span class="op">=</span> <span class="va">vim</span><span class="op">.</span><span class="va">keymap</span><span class="op">.</span><span class="va">set</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="kw">local</span> <span class="kw">function</span> start_term<span class="op">(</span><span class="va">split_cmd</span><span class="op">)</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- Actually start the terminal</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- The botright is there to open the terminal at the bottom, or right...</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- From https://vi.stackexchange.com/a/9310</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- Apparently you can make this default behaviour with a :set</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="va">vim</span><span class="op">.</span>cmd<span class="op">(</span><span class="st">&quot;botright &quot;</span> <span class="op">..</span> <span class="va">split_cmd</span> <span class="op">..</span> <span class="st">&quot; term://&quot;</span> <span class="op">..</span> <span class="va">vim</span><span class="op">.</span><span class="va">env</span><span class="op">.</span><span class="cn">SHELL</span><span class="op">)</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- Change window specific settings</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>    <span class="va">vim</span><span class="op">.</span><span class="va">wo</span><span class="op">.</span><span class="va">number</span> <span class="op">=</span> <span class="kw">false</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>    <span class="va">vim</span><span class="op">.</span><span class="va">wo</span><span class="op">.</span><span class="va">relativenumber</span> <span class="op">=</span> <span class="kw">false</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- Actually insert stuff!</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">-- Otherwise it just has the normal mode cursor</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>    <span class="va">vim</span><span class="op">.</span><span class="va">cmd</span><span class="op">.</span>startinsert<span class="op">()</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="co">-- Open horizontal terminal</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>keymap<span class="op">(</span><span class="st">&quot;n&quot;</span><span class="op">,</span> <span class="st">&quot;&lt;Leader&gt;hh&quot;</span><span class="op">,</span> <span class="kw">function</span><span class="op">()</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>    start_term<span class="op">(</span><span class="st">&quot;split&quot;</span><span class="op">)</span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span><span class="op">,{})</span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">-- Open vertical terminal</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>keymap<span class="op">(</span><span class="st">&quot;n&quot;</span><span class="op">,</span> <span class="st">&quot;&lt;Leader&gt;vv&quot;</span><span class="op">,</span> <span class="kw">function</span><span class="op">()</span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>    start_term<span class="op">(</span><span class="st">&quot;vsplit&quot;</span><span class="op">)</span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="kw">end</span><span class="op">,{})</span></span></code></pre>
+</div>
+<p>
+  These use a <code>&lt;Leader&gt;</code> key. I really like setting mine as a
+  space with <code>vim.g.mapleader = " "</code>, but you can use any. Or even
+  just not a leader key. Thinking about it this might be better if you use an
+  auto command with <code>TermOpen</code>, ngl. Yeah actually use the
+  <code>set</code> for the temrinal position and then do the number disabling in
+  the autocmd. Insert mode can be done in the callback.
+</p>
+<p>Well uh, that’s your homework.</p>
+<h4 id="auto-close">Auto close</h4>
+<p>
+  This bit shouldn’t need changing. When a terminal closes (the program that is
+  running exits), it produces a <code>TermClose</code>
+  <a href="https://neovim.io/doc/user/autocmd.html#autocmd-events">event</a>
+  which you can use for running auto commands. The idea is to call
+  <code>:q</code> when this happens.
+</p>
+<p>I made an <code>autocmd.lua</code> file for this.</p>
+<div class="sourceCode" id="cb2">
+  <pre
+    class="sourceCode lua"
+  ><code class="sourceCode lua"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">local</span> <span class="va">autocmd</span> <span class="op">=</span> <span class="va">vim</span><span class="op">.</span><span class="va">api</span><span class="op">.</span><span class="va">nvim_create_autocmd</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">-- Close terminals quickly!</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>autocmd<span class="op">(</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span> <span class="st">&quot;TermClose&quot;</span> <span class="op">},</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="op">{</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>        <span class="va">pattern</span> <span class="op">=</span> <span class="op">{</span><span class="st">&quot;term://*:&quot;</span> <span class="op">..</span> <span class="va">vim</span><span class="op">.</span><span class="va">env</span><span class="op">.</span><span class="cn">SHELL</span><span class="op">},</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="va">callback</span> <span class="op">=</span> <span class="kw">function</span><span class="op">(</span><span class="va">ev</span><span class="op">)</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>            <span class="va">vim</span><span class="op">.</span><span class="va">cmd</span><span class="op">.</span>wincmd<span class="op">(</span><span class="st">&quot;q&quot;</span><span class="op">)</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>        <span class="kw">end</span><span class="op">,</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="op">)</span></span></code></pre>
+</div>
+<p>
+  The pattern is there so that it only closes the ones with a shell running. So
+  if you do, for example, <code>:term cowsay arch,btw</code>, you get to
+  appreaciate the full glory of the cow without it instantly closing.
+</p>
+<h3 id="conclusion">Conclusion</h3>
+<p>I love nvim :)</p>
