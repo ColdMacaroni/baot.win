@@ -119,6 +119,8 @@ code {
     border-radius: 5px;
 }
 
+/* Make anchors actually visible */
+
 a {
     color: var(--link-fg);
 }
