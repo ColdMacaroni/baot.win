@@ -7,8 +7,6 @@
         <link href="/css/styles.css" rel="stylesheet">
     </head>
     <body>
-        TODO! Sort by date. Also make this prettier...
-
         <?php require "header.php"; ?>
         <main>
             <h2>My posts</h2>
@@ -36,8 +34,24 @@
             // No .html so it's fancy. Ideally we get it from the title or whatever
             $title = preg_replace("/.html$/", "", $fn);
 
+            $contents = file_get_contents($folder . $fn);
+
+            // Error reading file
+            if ($contents === false) {
+              continue;
+            }
+
+            $matches = array();
+            preg_match("/<h2.*?>(.*)<\\/h2>/", $contents, $matches);
+
+            $fancyTitle = $title;
+
+            if (count($matches) > 0) {
+              $fancyTitle = $matches[1];
+            }
+
             echo "<li>";
-            echo '<a href="viewpost.php?post=' . $title . '"> ' . $title . '</a>';
+            echo '<a href="viewpost.php?post=' . $title . '"> ' . $fancyTitle . '</a>';
             echo "</li>\n";
 
         }
