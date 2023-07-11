@@ -126,3 +126,9 @@ a {
 a:visited {
     color: var(--link-visited-fg);
 }
+
+/* Center the p5 canvas */
+canvas.p5Canvas {
+    display: block;
+    margin: 0 auto;
+}

@@ -1,0 +1,85 @@
+<h2 id="processing-4-lsp">Processing 4 LSP</h2>
+<p>
+  My Computer Graphics course will be using
+  <a href="https://processing.org">processing</a> for stuff. However, as a proud
+  terminal goblin I refused to use the Processing IDE. I just had to install the
+  LSP and add it to nvim right? It should be easy, right??
+</p>
+<p>
+  I couldn’t find an lsp for it. No <code>:Mason</code> or
+  <code>yay -Ss</code> could find anything. Even after searching online and
+  looking on the <a href="https://langserver.org/">Language Server</a> I
+  couldn’t find one. Digging through github issues, I found out that an LSP had
+  been merged into the official repo. Great news! But uh, how do I even run it…
+</p>
+<p>
+  On another issue, someone mentioned that they’d made a
+  <a href="https://github.com/kgtkr/processing-language-server-vscode/"
+    >VSCode extension</a
+  >
+  for the language server. Looking at the code, I found out what they were
+  running to start the server. (god i hate java).
+</p>
+<h3 id="starting-the-server">Starting the server</h3>
+<p>
+  Looking at <code>file $(which processing)</code>, I found the script that
+  processing uses to actually start the thing. On my laptop (arch btw), the file
+  is at <code>/usr/share/processing/processing</code>. I just copied it to
+  <code>/usr/share/processing/processing-lsp</code> and edited the following bit
+  (it’s near the bottom of the file):
+</p>
+<div class="sourceCode" id="cb1">
+  <pre
+    class="sourceCode diff"
+  ><code class="sourceCode diff"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">--- processing  2023-07-10 13:38:52.000000000 +1200</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="dt">+++ processing-lsp  2023-07-11 19:22:51.443720462 +1200</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="dt">@@ -107,5 +107,5 @@</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a> else</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>   # Start Processing in the same directory as this script</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>   cd &quot;$APPDIR&quot;</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="st">-  java -Djna.nosys=true -Dawt.useSystemAAFontSettings=on -Dswing.aatext=true -Dpython.console.encoding=UTF-8 -Xmx512m --add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED processing.app.ui.Splash &quot;$@&quot; &amp;</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="va">+  java -Djna.nosys=true -Djava.awt.headless=true -Xmx512m processing.mode.java.lsp.PdeLanguageServer</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a> fi</span></code></pre>
+</div>
+<p>Then running that created a process listening on port 63342!</p>
+<h3 id="using-it-with-neovim">Using it with NeoVim</h3>
+<p>
+  The only thing left to do was add it to nvim! I’m not too sure of how to use
+  lspconfig, so I just used the default lsp stuff. I just added this AutoCommand
+  that starts the lsp. It provides autocomplete and some static code analysis
+  (errors and stuff). I’m not sure of how to get documentation :(. Also! You
+  need the
+  <a href="https://github.com/sophacles/vim-processing">vim-processing</a>
+  extension to get the <code>processing</code> filetype. In addition to that, it
+  provides syntax highlighting and the ability to use <code>:make</code> to run
+  the sketches. Apparently it also lets you use K for documentation, but I
+  haven’t gotten that to work. This is the bit I added, (in Lua):
+</p>
+<div class="sourceCode" id="cb2">
+  <pre
+    class="sourceCode lua"
+  ><code class="sourceCode lua"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="va">vim</span><span class="op">.</span><span class="va">api</span><span class="op">.</span>nvim_create_autocmd<span class="op">({</span> <span class="st">&quot;FileType&quot;</span> <span class="op">},</span> <span class="op">{</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="va">pattern</span> <span class="op">=</span> <span class="st">&quot;processing&quot;</span><span class="op">,</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="va">callback</span> <span class="op">=</span> <span class="kw">function</span><span class="op">()</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    <span class="va">vim</span><span class="op">.</span><span class="va">lsp</span><span class="op">.</span>start <span class="op">{</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>      <span class="va">name</span> <span class="op">=</span> <span class="st">&quot;processing-lsp&quot;</span><span class="op">,</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>      <span class="va">cmd</span> <span class="op">=</span> <span class="op">{</span> <span class="st">&quot;/usr/share/processing/processing-lsp&quot;</span> <span class="op">},</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>      <span class="va">root_dir</span> <span class="op">=</span> <span class="va">vim</span><span class="op">.</span><span class="va">fs</span><span class="op">.</span>dirname<span class="op">(</span><span class="va">vim</span><span class="op">.</span><span class="va">fs</span><span class="op">.</span>find<span class="op">(</span><span class="kw">function</span><span class="op">(</span><span class="va">name</span><span class="op">)</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">name</span><span class="op">:</span><span class="fu">match</span> <span class="st">&quot;.*%.pde$&quot;</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>      <span class="kw">end</span><span class="op">,</span> <span class="op">{</span> <span class="fu">type</span> <span class="op">=</span> <span class="st">&quot;file&quot;</span> <span class="op">})[</span><span class="dv">0</span><span class="op">]),</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="op">}</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="kw">end</span><span class="op">,</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="op">})</span></span></code></pre>
+</div>
+
+<h3 id="the-result">The Result</h3>
+<p>
+  And it works! Very nice!! Here’s my test file which I translated into p5.js.
+  That's right, I'm making your browser execute JavaScript right now. The syntax
+  highlighting? JavaScript as well. How does that make you feel? (Unless you're
+  blocking JavaScript, then you've got the moral high ground). Move the circle
+  around with WASD :)
+</p>
+
+<script src="/p5.js/p5.min.js"></script>
+<script src="/p5.js/sketches/simple_control.js"></script>
