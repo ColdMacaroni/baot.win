@@ -42,7 +42,9 @@
             }
 
             $matches = array();
-            preg_match("/<h2.*?>(.*)<\\/h2>/", $contents, $matches);
+            // s flag matches across newlines.
+            // From https://stackoverflow.com/a/159139.
+            preg_match("/<h2.*?>(.*)<\\/h2>/s", $contents, $matches);
 
             $fancyTitle = $title;
 
