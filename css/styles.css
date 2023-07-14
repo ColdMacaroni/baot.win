@@ -1,5 +1,6 @@
 :root {
     --bg: #131013;
+    --inline-code-bg: #282528;
     --fg: #f7f7e6;
     --link-fg: #efbf7c;
     --link-visited-fg: #c4805c;
@@ -117,6 +118,14 @@ code {
     min-width: 50%;
     margin: 0 auto;
     border-radius: 5px;
+}
+
+/* Add a little background to inline code */
+
+code:not(.sourceCode) {
+  background-color: var(--inline-code-bg);
+  padding: 2px 4px;
+  border-radius: 4px;
 }
 
 /* Make anchors actually visible */
