@@ -5,9 +5,9 @@
   </div>
   <nav>
     <ul>
-      <a href="index.php"><li>Home</li></a>
-      <a href="posts.php"><li>Posts</li></a>
-      <a href="guides.php"><li>Guides</li></a>
+      <a href="/index.php"><li>Home</li></a>
+      <a href="/posts.php"><li>Posts</li></a>
+      <a href="/guides.php"><li>Guides</li></a>
     </ul>
   </nav>
 
