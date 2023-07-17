@@ -7,7 +7,7 @@
     <ul>
       <a href="index.php"><li>Home</li></a>
       <a href="posts.php"><li>Posts</li></a>
-      <a href="index.php"><li>My Stuff</li></a>
+      <a href="guides.php"><li>Guides</li></a>
     </ul>
   </nav>
 
@@ -19,7 +19,8 @@
 
     // https://www.php.net/manual/en/class.directoryiterator.php
     // Grab all the pngs
-  foreach (new DirectoryIterator($folder) as $fileInfo) {
+    // Need to use server root do that they're found from different folders. https://stackoverflow.com/a/15211243
+  foreach (new DirectoryIterator($_SERVER["DOCUMENT_ROOT"] . "/" . $folder) as $fileInfo) {
       if ($fileInfo->isDot()) {
           continue; 
       }
